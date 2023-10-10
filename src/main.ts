@@ -30,13 +30,18 @@ button.addEventListener("click", () => {
   }
 });
 
-// Adding auto-increment of the button
-setInterval(autoButton, 1000);
+// Adding auto-increment of the button using animate
+
+let last = 0;
 autoButton();
 
 // Functions
 function autoButton() {
-  counterMsg.innerHTML = `You have caught ${(counter += 1)} fish!`;
+  if (performance.now() - last >= 1000) {
+    last = performance.now();
+    counterMsg.innerHTML = `You have caught ${(counter += 1)} fish!`;
+  }
+  requestAnimationFrame(autoButton);
 }
 
 function incrementButton() {
