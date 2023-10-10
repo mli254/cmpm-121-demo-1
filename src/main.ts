@@ -14,3 +14,16 @@ app.append(header);
 const button = document.createElement("button");
 button.innerHTML = buttonName;
 app.append(button);
+
+let counter: number = 0;
+const counterMsg: HTMLDivElement = document.createElement("div");
+counterMsg.innerHTML = `You have caught ${counter} fish!`;
+app.append(counterMsg);
+
+button.addEventListener("click", () => {
+  try {
+    counterMsg.innerHTML = `You have caught ${(counter += 1)} fish!`;
+  } catch (TypeError) {
+    console.log("document.getElementById returned null");
+  }
+});
