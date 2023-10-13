@@ -12,6 +12,11 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+const subheader = document.createElement("h2");
+subheader.innerHTML =
+  "Out on the open ocean, there's no telling what you'll catch.<br>Click to cast your line!";
+app.append(subheader);
+
 const rateMsg: HTMLDivElement = document.createElement("div");
 rateMsg.innerHTML = `0 fish/second`;
 app.append(rateMsg);
@@ -36,7 +41,7 @@ button.addEventListener("click", () => {
 
 // setting up purchasables
 const krill: Purchasable = {
-  name: "Krill As Bait",
+  name: "🦐 Krill",
   price: 10,
   growthRate: 0.1,
   button: document.createElement("button"),
@@ -44,7 +49,7 @@ const krill: Purchasable = {
 };
 
 const squid: Purchasable = {
-  name: "🦑 Squid As Bait",
+  name: "🦑 Squid",
   price: 100,
   growthRate: 2,
   button: document.createElement("button"),
@@ -52,7 +57,7 @@ const squid: Purchasable = {
 };
 
 const whale: Purchasable = {
-  name: "Whale As Bait",
+  name: "🐋 Whale",
   price: 1000,
   growthRate: 50,
   button: document.createElement("button"),
@@ -111,15 +116,16 @@ function purchase(thisPurchasable: Purchasable) {
   thisPurchasable.price *= 1.15;
   thisPurchasable.amount += 1;
   if (thisPurchasable.amount > 0) {
-    thisPurchasable.button.innerHTML = `${thisPurchasable.name} 
-    | Cost: ${thisPurchasable.price.toFixed(1)} Fish (${
+    thisPurchasable.button.innerHTML = `${thisPurchasable.name}<br>Rate: ${
+      thisPurchasable.growthRate
+    } | Cost: ${thisPurchasable.price.toFixed(1)} Fish (${
       thisPurchasable.amount
     })`;
   }
 }
 
 function createPurchasable(thisPurchasable: Purchasable) {
-  thisPurchasable.button.innerHTML = `${thisPurchasable.name} | Cost: ${thisPurchasable.price} Fish`;
+  thisPurchasable.button.innerHTML = `${thisPurchasable.name}<br>Rate: ${thisPurchasable.growthRate} | Cost: ${thisPurchasable.price} Fish`;
   thisPurchasable.button.disabled = true;
   app.append(thisPurchasable.button);
 }
