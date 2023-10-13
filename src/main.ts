@@ -107,10 +107,14 @@ function purchase(thisPurchasable: Purchasable) {
     thisPurchasable.price)} fish!`;
   growth += thisPurchasable.growthRate;
   rateMsg.innerHTML = `${growth.toFixed(1)} fish/second`;
+
+  thisPurchasable.price *= 1.15;
   thisPurchasable.amount += 1;
   if (thisPurchasable.amount > 0) {
     thisPurchasable.button.innerHTML = `${thisPurchasable.name} 
-    | Cost: ${thisPurchasable.price} Fish (${thisPurchasable.amount})`;
+    | Cost: ${thisPurchasable.price.toFixed(1)} Fish (${
+      thisPurchasable.amount
+    })`;
   }
 }
 
