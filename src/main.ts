@@ -12,14 +12,13 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+const rateMsg: HTMLDivElement = document.createElement("div");
+rateMsg.innerHTML = `0 fish/second`;
+app.append(rateMsg);
+
 const button = document.createElement("button");
 button.innerHTML = buttonName;
 app.append(button);
-
-const squid = document.createElement("button");
-squid.innerHTML = "🦑 Squid As Bait | Cost: 10 Fish";
-squid.disabled = true;
-app.append(squid);
 
 // Adding counter incrementing on click
 let counter: number = 0;
@@ -35,27 +34,67 @@ button.addEventListener("click", () => {
   }
 });
 
-squid.addEventListener("click", () => {
-  purchase(10, 1);
+// setting up purchasables
+const krill: Purchasable = {
+  name: "Krill As Bait",
+  price: 10,
+  growthRate: 0.1,
+  button: document.createElement("button"),
+  amount: 0,
+};
+
+const squid: Purchasable = {
+  name: "🦑 Squid As Bait",
+  price: 100,
+  growthRate: 2,
+  button: document.createElement("button"),
+  amount: 0,
+};
+
+const whale: Purchasable = {
+  name: "Whale As Bait",
+  price: 1000,
+  growthRate: 50,
+  button: document.createElement("button"),
+  amount: 0,
+};
+createPurchasable(krill);
+createPurchasable(squid);
+createPurchasable(whale);
+
+krill.button.addEventListener("click", () => {
+  purchase(krill);
+});
+squid.button.addEventListener("click", () => {
+  purchase(squid);
+});
+whale.button.addEventListener("click", () => {
+  purchase(whale);
 });
 
 // Adding auto-increment of the button using animate
-let last = 0;
 let growth = 0;
 autoButton();
 
-// Functions
-function autoButton() {
-  if (performance.now() - last >= 1000) {
-    last = performance.now();
-    counterMsg.innerHTML = `You have caught ${(counter += growth)} fish!`;
-  }
+// Interaces  =====================
+/* Inspired by Aaron in the Discord since the thought of using an interface hadn't occurred to me */
+interface Purchasable {
+  name: string;
+  price: number;
+  growthRate: number;
+  button: HTMLButtonElement;
+  amount: number;
+}
 
-  if (counter >= 10) {
-    squid.disabled = false;
-  } else if (counter < 10) {
-    squid.disabled = true;
-  }
+// Functions  =====================
+function autoButton() {
+  counterMsg.innerHTML = `You have caught ${(counter += growth / 60).toFixed(
+    0,
+  )} fish!`;
+
+  checkDisabled(krill);
+  checkDisabled(squid);
+  checkDisabled(whale);
   requestAnimationFrame(autoButton);
 }
 
@@ -63,7 +102,28 @@ function incrementButton() {
   counterMsg.innerHTML = `You have caught ${(counter += 1)} fish!`;
 }
 
-function purchase(price: number, growthRate: number) {
-  counterMsg.innerHTML = `You have caught ${(counter -= price)} fish!`;
-  growth += growthRate;
+function purchase(thisPurchasable: Purchasable) {
+  counterMsg.innerHTML = `You have caught ${(counter -=
+    thisPurchasable.price)} fish!`;
+  growth += thisPurchasable.growthRate;
+  rateMsg.innerHTML = `${growth.toFixed(1)} fish/second`;
+  thisPurchasable.amount += 1;
+  if (thisPurchasable.amount > 0) {
+    thisPurchasable.button.innerHTML = `${thisPurchasable.name} 
+    | Cost: ${thisPurchasable.price} Fish (${thisPurchasable.amount})`;
+  }
+}
+
+function createPurchasable(thisPurchasable: Purchasable) {
+  thisPurchasable.button.innerHTML = `${thisPurchasable.name} | Cost: ${thisPurchasable.price} Fish`;
+  thisPurchasable.button.disabled = true;
+  app.append(thisPurchasable.button);
+}
+
+function checkDisabled(thisPurchasable: Purchasable) {
+  if (counter >= thisPurchasable.price) {
+    thisPurchasable.button.disabled = false;
+  } else if (counter < thisPurchasable.price) {
+    thisPurchasable.button.disabled = true;
+  }
 }
