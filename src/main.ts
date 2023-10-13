@@ -40,42 +40,37 @@ button.addEventListener("click", () => {
 });
 
 // setting up purchasables
-const krill: Purchasable = {
-  name: "🦐 Krill",
-  price: 10,
-  growthRate: 0.1,
-  button: document.createElement("button"),
-  amount: 0,
-};
+const availableItems: Purchasable[] = [
+  {
+    name: "🦐 Krill",
+    price: 10,
+    growthRate: 0.1,
+    button: document.createElement("button"),
+    amount: 0,
+  },
+  {
+    name: "🦑 Squid",
+    price: 100,
+    growthRate: 2,
+    button: document.createElement("button"),
+    amount: 0,
+  },
+  {
+    name: "🐋 Whale",
+    price: 1000,
+    growthRate: 50,
+    button: document.createElement("button"),
+    amount: 0,
+  },
+];
 
-const squid: Purchasable = {
-  name: "🦑 Squid",
-  price: 100,
-  growthRate: 2,
-  button: document.createElement("button"),
-  amount: 0,
-};
+createPurchasable(availableItems);
 
-const whale: Purchasable = {
-  name: "🐋 Whale",
-  price: 1000,
-  growthRate: 50,
-  button: document.createElement("button"),
-  amount: 0,
-};
-createPurchasable(krill);
-createPurchasable(squid);
-createPurchasable(whale);
-
-krill.button.addEventListener("click", () => {
-  purchase(krill);
-});
-squid.button.addEventListener("click", () => {
-  purchase(squid);
-});
-whale.button.addEventListener("click", () => {
-  purchase(whale);
-});
+for (let i = 0; i < availableItems.length; i++) {
+  availableItems[i].button.addEventListener("click", () => {
+    purchase(availableItems[i]);
+  });
+}
 
 // Adding auto-increment of the button using animate
 let growth = 0;
@@ -83,6 +78,8 @@ autoButton();
 
 // Interaces  =====================
 /* Inspired by Aaron in the Discord since the thought of using an interface hadn't occurred to me */
+/* Implemented before Step 9, however there are still additional fields besides the 
+  initial 3 recommended ones */
 interface Purchasable {
   name: string;
   price: number;
@@ -97,9 +94,7 @@ function autoButton() {
     0,
   )} fish!`;
 
-  checkDisabled(krill);
-  checkDisabled(squid);
-  checkDisabled(whale);
+  checkDisabled(availableItems);
   requestAnimationFrame(autoButton);
 }
 
@@ -107,33 +102,36 @@ function incrementButton() {
   counterMsg.innerHTML = `You have caught ${(counter += 1)} fish!`;
 }
 
-function purchase(thisPurchasable: Purchasable) {
-  counterMsg.innerHTML = `You have caught ${(counter -=
-    thisPurchasable.price)} fish!`;
-  growth += thisPurchasable.growthRate;
+function purchase(thisItem: Purchasable) {
+  counterMsg.innerHTML = `You have caught ${(counter -= thisItem.price)} fish!`;
+  growth += thisItem.growthRate;
   rateMsg.innerHTML = `${growth.toFixed(1)} fish/second`;
 
-  thisPurchasable.price *= 1.15;
-  thisPurchasable.amount += 1;
-  if (thisPurchasable.amount > 0) {
-    thisPurchasable.button.innerHTML = `${thisPurchasable.name}<br>Rate: ${
-      thisPurchasable.growthRate
-    } | Cost: ${thisPurchasable.price.toFixed(1)} Fish (${
-      thisPurchasable.amount
-    })`;
+  thisItem.price *= 1.15;
+  thisItem.amount += 1;
+  if (thisItem.amount > 0) {
+    thisItem.button.innerHTML = `${thisItem.name}<br>Rate: ${
+      thisItem.growthRate
+    } | Cost: ${thisItem.price.toFixed(1)} Fish (${thisItem.amount})`;
   }
 }
 
-function createPurchasable(thisPurchasable: Purchasable) {
-  thisPurchasable.button.innerHTML = `${thisPurchasable.name}<br>Rate: ${thisPurchasable.growthRate} | Cost: ${thisPurchasable.price} Fish`;
-  thisPurchasable.button.disabled = true;
-  app.append(thisPurchasable.button);
+function createPurchasable(purchasables: Purchasable[]) {
+  for (let i = 0; i < purchasables.length; i++) {
+    purchasables[
+      i
+    ].button.innerHTML = `${purchasables[i].name}<br>Rate: ${purchasables[i].growthRate} | Cost: ${purchasables[i].price} Fish`;
+    purchasables[i].button.disabled = true;
+    app.append(purchasables[i].button);
+  }
 }
 
-function checkDisabled(thisPurchasable: Purchasable) {
-  if (counter >= thisPurchasable.price) {
-    thisPurchasable.button.disabled = false;
-  } else if (counter < thisPurchasable.price) {
-    thisPurchasable.button.disabled = true;
+function checkDisabled(purchasables: Purchasable[]) {
+  for (let i = 0; i < purchasables.length; i++) {
+    if (counter >= purchasables[i].price) {
+      purchasables[i].button.disabled = false;
+    } else if (counter < purchasables[i].price) {
+      purchasables[i].button.disabled = true;
+    }
   }
 }
