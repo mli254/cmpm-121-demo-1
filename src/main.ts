@@ -93,7 +93,8 @@ for (let i = 0; i < availableItems.length; i++) {
 
 // Adding auto-increment of the button using animate
 let growth = 0;
-autoButton();
+let last = 0;
+requestAnimationFrame(autoButton);
 
 // Interaces  =====================
 /* Inspired by Aaron in the Discord since the thought of using an interface hadn't occurred to me */
@@ -110,10 +111,10 @@ interface Purchasable {
 
 // Functions  =====================
 function autoButton() {
-  counterMsg.innerHTML = `You have caught ${(counter += growth / 60).toFixed(
-    0,
-  )} fish!`;
-
+  const timePassed = performance.now() - last;
+  last = performance.now();
+  counterMsg.innerHTML = `You have caught ${(counter +=
+    growth / timePassed).toFixed(0)} fish!`;
   checkDisabled(availableItems);
   requestAnimationFrame(autoButton);
 }
