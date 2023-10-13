@@ -47,6 +47,7 @@ const availableItems: Purchasable[] = [
     growthRate: 0.1,
     button: document.createElement("button"),
     amount: 0,
+    desc: "A staple food source for many creatures.",
   },
   {
     name: "🦑 Squid",
@@ -54,13 +55,31 @@ const availableItems: Purchasable[] = [
     growthRate: 2,
     button: document.createElement("button"),
     amount: 0,
+    desc: "A favorite treat of sperm whales.",
   },
   {
-    name: "🐋 Whale",
+    name: "🦈 Shark",
     price: 1000,
     growthRate: 50,
     button: document.createElement("button"),
     amount: 0,
+    desc: "This might be overkill.",
+  },
+  {
+    name: "🐋 Whale",
+    price: 10000,
+    growthRate: 200,
+    button: document.createElement("button"),
+    amount: 0,
+    desc: "Can you even fit this on your boat?",
+  },
+  {
+    name: "🌀 Cthulu",
+    price: 100000,
+    growthRate: -9999,
+    button: document.createElement("button"),
+    amount: 0,
+    desc: "Oh, now you've done it.",
   },
 ];
 
@@ -86,6 +105,7 @@ interface Purchasable {
   growthRate: number;
   button: HTMLButtonElement;
   amount: number;
+  desc: string;
 }
 
 // Functions  =====================
@@ -110,9 +130,11 @@ function purchase(thisItem: Purchasable) {
   thisItem.price *= 1.15;
   thisItem.amount += 1;
   if (thisItem.amount > 0) {
-    thisItem.button.innerHTML = `${thisItem.name}<br>Rate: ${
-      thisItem.growthRate
-    } | Cost: ${thisItem.price.toFixed(1)} Fish (${thisItem.amount})`;
+    thisItem.button.innerHTML = `<strong>${thisItem.name} (${
+      thisItem.amount
+    })<br>Rate: ${thisItem.growthRate} | Cost: ${thisItem.price.toFixed(
+      1,
+    )} Fish</strong><br>${thisItem.desc}`;
   }
 }
 
@@ -120,7 +142,7 @@ function createPurchasable(purchasables: Purchasable[]) {
   for (let i = 0; i < purchasables.length; i++) {
     purchasables[
       i
-    ].button.innerHTML = `${purchasables[i].name}<br>Rate: ${purchasables[i].growthRate} | Cost: ${purchasables[i].price} Fish`;
+    ].button.innerHTML = `<strong>${purchasables[i].name}<br>Rate: ${purchasables[i].growthRate} | Cost: ${purchasables[i].price} Fish</strong><br>${purchasables[i].desc}`;
     purchasables[i].button.disabled = true;
     app.append(purchasables[i].button);
   }
