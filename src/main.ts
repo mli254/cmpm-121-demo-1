@@ -110,11 +110,11 @@ interface Purchasable {
 }
 
 // Functions  =====================
-function autoButton() {
-  const timePassed = performance.now() - last;
-  last = performance.now();
+function autoButton(timeStamp: number) {
+  const timePassed = timeStamp - last;
+  last = timeStamp;
   counterMsg.innerHTML = `You have caught ${(counter +=
-    growth / timePassed).toFixed(0)} fish!`;
+    growth * (timePassed / 1000)).toFixed(0)} fish!`;
   checkDisabled(availableItems);
   requestAnimationFrame(autoButton);
 }
